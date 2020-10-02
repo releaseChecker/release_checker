@@ -11,4 +11,5 @@ class LibrarySerializer(serializers.ModelSerializer):
             "name",
             "version",
             "url",
+            "belong_to",
             ]
