@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/releaseChecker/release_checker/issues"
   },
-  "homepage": "https://github.com/releaseChecker/release_checker#readme"
+  "homepage": "https://github.com/releaseChecker/release_checker#readme",
+  "dependencies": {
+    "create-react-app": "^3.4.1",
+    "node": "^14.13.0"
+  }
 }
