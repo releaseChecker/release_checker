@@ -21,17 +21,10 @@ class LibraryCrawler(metaclass=ABCMeta):
         pass
 
     def _process_item(self, items):
-        if items["latest_version"] != self.library.get_version():
-            self.library.version = items["latest_version"]
-            self._update_version()
-
-    def _update_version(self):
-        url = f"http://localhost:8000/libraries/{self.library.get_id()}/"
-        serialized_library = LibrarySerializer().to_representation(self.library)
-        requests.put(
-            url=url,
-            data=serialized_library
-        )
+        if not self.library.is_up_to_date(items["version"]):
+            serializer = LibrarySerializer(self.library, data=items, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
 
 
 class MavenLibraryCrawler(LibraryCrawler):
@@ -39,7 +32,7 @@ class MavenLibraryCrawler(LibraryCrawler):
     def _parse(self, response):
         items = {}
         page = BeautifulSoup(response, features="lxml")
-        items["latest_version"] = page.find("a", class_="vbtn release").string
+        items["version"] = page.find("a", class_="vbtn release").string
         return items
 
 
@@ -47,5 +40,5 @@ class LibraryCrawlerFactory:
 
     @staticmethod
     def get_crawler(library):
-        if library.get_belong_to() == "maven":
+        if library.is_member_of("maven"):
             return MavenLibraryCrawler(library)
