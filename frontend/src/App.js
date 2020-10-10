@@ -2,12 +2,6 @@ import React from 'react';
 import './App.css';
 import axios from 'axios';
 
-// var test = () => {
-//   axios.get("http://127.0.0.1:8000/libraries/")
-//     .then(res => alert(res.data))
-//     .catch(err => console.log(err));
-// }
-
 class App extends React.Component {
   state = {
     libraries: []
