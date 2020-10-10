@@ -1,6 +1,13 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+
+var test = () => {
+  axios.get("http://127.0.0.1:8000/libraries/")
+    .then(res => alert(res.data))
+    .catch(err => console.log(err));
+}
 
 function App() {
   return (
@@ -18,6 +25,7 @@ function App() {
         >
           Learn React
         </a>
+        <button id="test-btn" onClick={() => test()}>Test</button>
       </header>
     </div>
   );
