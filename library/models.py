@@ -7,7 +7,7 @@ class Library(models.Model):
     name = models.CharField(max_length=50, unique=True)
     version = models.CharField(max_length=20)
     url = models.CharField(max_length=200)
-    affiliation = models.CharField(max_length=20)
+    group = models.CharField(max_length=20)
 
     def get_url(self):
         return self.url
@@ -17,7 +17,7 @@ class Library(models.Model):
         latest = LibraryVersion(latest_version)
         return not current.is_older_than(latest)
 
-    def is_member_of(self, affiliation):
-        return self.affiliation == affiliation
+    def is_member_of(self, group):
+        return self.group == group
 
 
