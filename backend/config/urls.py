@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework import routers
 
-from library.views import LibraryViewSet
+from library.views import LibraryViewSet, CrawlingAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("crawl/", CrawlingAPIView.as_view()),
 ]
 
 router = routers.SimpleRouter()
