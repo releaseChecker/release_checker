@@ -1,34 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
 
-var test = () => {
-  axios.get("http://127.0.0.1:8000/libraries/")
-    .then(res => alert(res.data))
-    .catch(err => console.log(err));
-}
+class App extends React.Component {
+  state = {
+    libraries: []
+  };
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <button id="test-btn" onClick={() => test()}>Test</button>
-      </header>
-    </div>
-  );
+  loadItem = () => {
+    axios.get("http://127.0.0.1:8000/libraries/")
+    .then(({data}) => {
+      this.setState({
+        libraries: data
+      })
+    })
+    .catch(err => console.log(err));
+  }
+
+  componentDidMount() {
+    this.loadItem()
+  }
+
+  render() {
+    return (
+      <div className="App">
+        {this.state.libraries.map(item => (
+          <div key={item.id}>
+            <div key={item.id}>
+              <h1>{item.name}</h1>
+              <span>{item.version}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
 }
 
 export default App;
