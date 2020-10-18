@@ -9,12 +9,12 @@ class App extends React.Component {
 
   loadItem = () => {
     axios.get("/libraries/")
-    .then(({data}) => {
-      this.setState({
-        libraries: data
+      .then(({ data }) => {
+        this.setState({
+          libraries: data
+        })
       })
-    })
-    .catch(err => console.log(err));
+      .catch(err => console.log(err));
   }
 
   componentDidMount() {
@@ -24,7 +24,17 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        {this.state.libraries.map(item => (
+        <LibraryTable libraries={this.state.libraries} />        
+      </div>
+    )
+  }
+}
+
+class LibraryTable extends React.Component {
+  render() {
+    return (
+      <div className="LibraryTable">
+        {this.props.libraries.map(item => (
           <div key={item.id}>
             <div key={item.id}>
               <h1>{item.name}</h1>
