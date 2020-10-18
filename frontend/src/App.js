@@ -8,7 +8,7 @@ class App extends React.Component {
   };
 
   loadItem = () => {
-    axios.get("http://127.0.0.1:8000/libraries/")
+    axios.get("/libraries/")
     .then(({data}) => {
       this.setState({
         libraries: data
