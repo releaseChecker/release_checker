@@ -1,6 +1,9 @@
 import React from 'react';
 import './App.css';
 import axios from 'axios';
+import { Link, Route, BrowserRouter as Router } from "react-router-dom"
+import Home from './containers/home/HomeComponent';
+import Login from './containers/login/LoginComponent';
 
 class App extends React.Component {
   state = {
@@ -24,7 +27,20 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <LibraryTable libraries={this.state.libraries} />        
+        <Router>
+          <header>
+            <Link to="/">
+              <button>Home</button>
+            </Link>
+            <Link to="/libraries">
+              <button>Libraries</button>
+            </Link>
+          </header>
+          <main>
+            <Route exact path="/" component={Home} />
+            <Route path="/libraries" component={Login} />
+          </main>
+        </Router>
       </div>
     )
   }
