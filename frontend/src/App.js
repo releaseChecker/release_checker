@@ -6,6 +6,29 @@ import Home from './containers/home/HomeComponent';
 import Login from './containers/login/LoginComponent';
 
 class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <Router>
+          <header>
+            <Link to="/">
+              <button>Home</button>
+            </Link>
+            <Link to="/libraries">
+              <button>Libraries</button>
+            </Link>
+          </header>
+          <main>
+            <Route exact path="/" component={Home} />
+            <Route path="/libraries" component={LibraryTable} />
+          </main>
+        </Router>
+      </div>
+    )
+  }
+}
+
+class LibraryTable extends React.Component {
   state = {
     libraries: []
   };
@@ -26,31 +49,8 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
-        <Router>
-          <header>
-            <Link to="/">
-              <button>Home</button>
-            </Link>
-            <Link to="/libraries">
-              <button>Libraries</button>
-            </Link>
-          </header>
-          <main>
-            <Route exact path="/" component={Home} />
-            <Route path="/libraries" component={Login} />
-          </main>
-        </Router>
-      </div>
-    )
-  }
-}
-
-class LibraryTable extends React.Component {
-  render() {
-    return (
       <div className="LibraryTable">
-        {this.props.libraries.map(item => (
+        {this.state.libraries.map(item => (
           <div key={item.id}>
             <div key={item.id}>
               <h1>{item.name}</h1>
