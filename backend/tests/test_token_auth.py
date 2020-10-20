@@ -1,17 +1,18 @@
-import requests
-
-domain = "http://localhost:8000/"
-path_requiring_permission = "libraries/"
-token_path = "token/"
-login_credential = {
-    "username": "park",
-    "password": "1234",
-}
+import pytest
+from rest_framework import status
+from rest_framework.reverse import reverse
 
 
-def test_token_auth():
-    assert requests.get(domain + path_requiring_permission).status_code == 401
+class TestAuth:
 
-    token = "Bearer " + requests.post(domain + token_path, data=login_credential).json()["access"]
-    headers = {"Authorization": token}
-    assert requests.get(domain + path_requiring_permission, headers=headers).status_code == 200
+    @pytest.fixture
+    def requiring_auth_url(self, live_server):
+        return live_server.url + reverse("tag-list")
+
+    def test_no_auth(self, client, requiring_auth_url):
+        response = client.get(requiring_auth_url)
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_jwt_auth(self, authenticated_client, requiring_auth_url):
+        response = authenticated_client.get(requiring_auth_url)
+        assert response.status_code == status.HTTP_200_OK
