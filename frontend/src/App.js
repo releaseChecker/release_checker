@@ -16,8 +16,9 @@ class App extends Component {
         <Router history={history}>
           <Switch>
             <PrivateRoute exact path="/" component={Home} />
-            <PrivateRoute path="/libraries" component={LibraryTable} />            
-            <Route path="/login" component={Login} />
+            <PrivateRoute path="/libraries" component={LibraryTable} />
+            <Route exact path="/login" component={Login} />
+            <Redirect from="*" to="/" />
           </Switch>
         </Router>
       </div>
