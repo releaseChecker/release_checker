@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component} from 'react'
 import { Route, Redirect } from 'react-router-dom'
 
 class PrivateRoute extends Component {
@@ -14,3 +14,5 @@ class PrivateRoute extends Component {
         )
     }
 }
+
+export default PrivateRoute
