@@ -1,11 +1,14 @@
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
+import thunkMiddleware from 'redux-thunk';
+import { createLogger } from 'redux-logger';
+import rootReducer from '../reducers';
 
-export default createStore((state, action) => {
-    if (state === undefined) {
-        return { author: "ethan.yoo" }
-    }
-    if (action.type === "TEST") {
-        return { ...state, payload: state.author }
-    }
-    return state
-})
+const loggerMiddleware = createLogger();
+
+export default createStore(
+    rootReducer,
+    applyMiddleware(
+        thunkMiddleware,
+        loggerMiddleware
+    )
+)
