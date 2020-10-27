@@ -11,9 +11,19 @@ class LibrarySerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
-            "version",
             "url",
             ]
+
+
+class CreateLibrarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Library
+        fields = [
+            "name",
+            "version",
+            "url",
+            "group",
+        ]
 
     def validate_version(self, version):
         for i, c in enumerate(version):
@@ -23,3 +33,11 @@ class LibrarySerializer(serializers.ModelSerializer):
         if not LibraryVersion(version).is_valid():
             raise ValidationError("version data should be '0.0.0' pattern")
         return version
+
+
+class DeleteLibrarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Library
+        fields = [
+            "id",
+        ]

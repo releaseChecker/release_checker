@@ -4,12 +4,18 @@ from rest_framework.views import APIView
 
 from .crawler import LibraryCrawlerFactory
 from .models import Library
-from .serializers import LibrarySerializer
+from .serializers import LibrarySerializer, CreateLibrarySerializer, DeleteLibrarySerializer
 
 
 class LibraryViewSet(viewsets.ModelViewSet):
     queryset = Library.objects.all()
-    serializer_class = LibrarySerializer
+
+    def get_serializer_class(self):
+        if self.action == "list" or self.action == "retrieve":
+            return LibrarySerializer
+        if self.action == "delete":
+            return DeleteLibrarySerializer
+        return CreateLibrarySerializer
 
 
 class CrawlingAPIView(APIView):
