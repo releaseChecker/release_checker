@@ -1,40 +1,29 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './App.css';
-import axios from 'axios';
+import { Route, Router, Switch, Redirect } from "react-router-dom"
+import Home from './containers/HomeComponent';
+import Login from './containers/LoginComponent';
+import { connect } from 'react-redux';
+import { PrivateRoute } from './components/PrivateRoute'
+import LibraryTable from './containers/LibraryTable'
+import { history } from './helpers/history'
 
-class App extends React.Component {
-  state = {
-    libraries: []
-  };
-
-  loadItem = () => {
-    axios.get("http://127.0.0.1:8000/libraries/")
-    .then(({data}) => {
-      this.setState({
-        libraries: data
-      })
-    })
-    .catch(err => console.log(err));
-  }
-
-  componentDidMount() {
-    this.loadItem()
-  }
+class App extends Component {
 
   render() {
     return (
       <div className="App">
-        {this.state.libraries.map(item => (
-          <div key={item.id}>
-            <div key={item.id}>
-              <h1>{item.name}</h1>
-              <span>{item.version}</span>
-            </div>
-          </div>
-        ))}
+        <Router history={history}>
+          <Switch>
+            <PrivateRoute exact path="/" component={Home} />
+            <PrivateRoute path="/libraries" component={LibraryTable} />
+            <Route exact path="/login" component={Login} />
+            <Redirect from="*" to="/" />
+          </Switch>
+        </Router>
       </div>
     )
   }
 }
 
-export default App;
+export default connect()(App);
