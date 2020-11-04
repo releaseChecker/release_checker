@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from pytest_django.lazy_django import skip_if_no_django
 from rest_framework.reverse import reverse
 
-from library.models import Library
+from library.models import Library, History
 from user.models import Tag
 
 
@@ -14,7 +14,9 @@ def new_user(django_user_model):
         "password": "1234",
     }
     password = make_password(credential["password"])
-    user = django_user_model.objects.create(username=credential["username"], password=password)
+    user = django_user_model.objects.create(
+        username=credential["username"],
+        password=password)
     return user
 
 
@@ -34,7 +36,9 @@ def token(django_user_model, client, live_server, new_user):
         "username": new_user.username,
         "password": "1234",
     }
-    token = client.post(live_server.url + reverse("token_obtain_pair"), data=data).json()["access"]
+    token = client.post(
+        live_server.url + reverse("token_obtain_pair"),
+        data=data).json()["access"]
     return token
 
 
@@ -69,3 +73,26 @@ def tags(new_user, libraries):
         Tag.objects.create(user=new_user, library=library)
         for library in libraries
     ]
+
+
+@pytest.fixture
+def new_history(new_library):
+    return History.objects.create(
+        library=new_library,
+        version="1.0.0",
+        url="history.com"
+    )
+
+
+@pytest.fixture
+def histories(db, new_library):
+    count = 3
+    histories = []
+    for i in range(count):
+        i = str(i)
+        history = History.objects.create(
+            library=new_library,
+            version=i,
+            url=i)
+        histories.append(history)
+    return histories

@@ -21,3 +21,8 @@ class Library(models.Model):
         return self.group == group
 
 
+class History(models.Model):
+    library = models.ForeignKey(Library, on_delete=models.CASCADE, related_name="histories")
+    version = models.CharField(max_length=20)
+    url = models.CharField(max_length=200)
+    created_at = models.DateField(auto_now_add=True)
