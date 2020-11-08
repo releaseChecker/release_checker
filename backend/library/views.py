@@ -39,3 +39,10 @@ class CrawlingAPIView(APIView):
 class HistoryViewSet(viewsets.ModelViewSet):
     queryset = History.objects.all()
     serializer_class = HistorySerializer
+
+    def perform_create(self, serializer):
+        if not History.objects.filter(
+                library=self.request.data["library"],
+                version=self.request.data["version"],
+        ).exists():
+            serializer.save()
