@@ -4,8 +4,9 @@ from rest_framework.response import Response
 
 from library.models import History
 from library.serializers import HistorySerializer
-from user.models import Tag, User
-from user.serializers import ListTagSerializer, CreateTagSerializer, DeleteTagSerializer, UserSerializer
+from user.models import Tag, User, Comment
+from user.serializers import ListTagSerializer, CreateTagSerializer, DeleteTagSerializer, UserSerializer, \
+    CreateUserSerializer, CommentSerializer
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -39,4 +40,16 @@ class TagViewSet(viewsets.ModelViewSet):
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateUserSerializer
+        return UserSerializer
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

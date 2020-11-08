@@ -3,6 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from user.models import Comment
+from user.serializers import ListCommentSerializer
 from .crawler import LibraryCrawlerFactory
 from .models import Library, History
 from .serializers import LibrarySerializer, CreateLibrarySerializer, DeleteLibrarySerializer, HistorySerializer
@@ -38,7 +40,11 @@ class CrawlingAPIView(APIView):
 
 class HistoryViewSet(viewsets.ModelViewSet):
     queryset = History.objects.all()
-    serializer_class = HistorySerializer
+
+    def get_serializer_class(self):
+        if self.action == "comments":
+            return ListCommentSerializer
+        return HistorySerializer
 
     def perform_create(self, serializer):
         if not History.objects.filter(
@@ -46,3 +52,9 @@ class HistoryViewSet(viewsets.ModelViewSet):
                 version=self.request.data["version"],
         ).exists():
             serializer.save()
+
+    @action(detail=True, methods=['get'])
+    def comments(self, request, pk):
+        queryset = Comment.objects.filter(history=pk).order_by('created_at')
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
