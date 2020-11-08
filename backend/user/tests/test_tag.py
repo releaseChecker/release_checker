@@ -60,6 +60,7 @@ def tagged_histories(new_user, histories):
     return histories
 
 
+# need sorted test_case
 @pytest.mark.a
 class TestListTagHistory(TestListHistory):
     model = Tag

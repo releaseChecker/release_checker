@@ -22,7 +22,7 @@ class LibraryViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def histories(self, request, pk):
-        queryset = History.objects.filter(library=pk)
+        queryset = History.objects.filter(library=pk).order_by('-version')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -36,10 +36,6 @@ class CrawlingAPIView(APIView):
         return Response()
 
 
-# class HistoryViewSet(viewsets.ModelViewSet):
-#     serializer_class = HistorySerializer
-#
-#     def get_queryset(self):
-#         library_id = self.kwargs['library_id']
-#         library = Library.objects.get(id=library_id)
-#         return library.histories.all()
+class HistoryViewSet(viewsets.ModelViewSet):
+    queryset = History.objects.all()
+    serializer_class = HistorySerializer

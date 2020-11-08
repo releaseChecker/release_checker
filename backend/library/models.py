@@ -26,3 +26,8 @@ class History(models.Model):
     version = models.CharField(max_length=20)
     url = models.CharField(max_length=200)
     created_at = models.DateField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["library", "version"], name="unique_version"),
+        ]

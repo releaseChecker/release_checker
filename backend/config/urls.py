@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from user.views import TagViewSet, UserViewSet
-from library.views import LibraryViewSet, CrawlingAPIView
+from library.views import LibraryViewSet, CrawlingAPIView, HistoryViewSet
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -20,4 +20,5 @@ router = routers.SimpleRouter()
 router.register(r'libraries', LibraryViewSet)
 router.register(r'tags', TagViewSet, basename="tag")
 router.register(r'users', UserViewSet, basename="user")
+router.register(r'histories', HistoryViewSet)
 urlpatterns += router.urls

@@ -32,7 +32,7 @@ class TagViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["get"])
     def histories(self, request):
         tags = request.user.tags.all().values("library")
-        histories_in_tags = History.objects.filter(library__in=tags)
+        histories_in_tags = History.objects.filter(library__in=tags).order_by('-version')
         serializer = self.get_serializer(histories_in_tags, many=True)
         return Response(serializer.data)
 
