@@ -1,21 +1,19 @@
+import axios from 'axios';
+
 export const userService = {
     login,
     logout
 };
 
 function login(username, password) {
-    // TODO Integrate with login api
     console.log("userService.login", username, password)
-    return new Promise((resolve, reject) => {
-        console.log("userService.login.promise", username, password)
-        localStorage.setItem("user", "usertoken");
-        resolve("usertoken");
-
-        const flag = false;
-        if (flag) {
-            reject(new Error("Error"))
-        }
-    })    
+    return axios.post("/token/", {
+        username: username,
+        password: password
+    }).then(({ data }) => {
+        console.log("userService.login, success", username, password)
+        localStorage.setItem("user", data["access"]);
+    })
 }
 
 function logout() {
