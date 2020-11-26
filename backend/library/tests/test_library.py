@@ -3,7 +3,8 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 
 from library.models import Library
-from tests.base_classes import DeleteTest, UpdateTest
+from library.tests.test_history import TestListHistory
+from tests.base_classes import DeleteTest, UpdateTest, ListTest, PathFinder
 
 
 def test_create_library(authenticated_client, live_server):
@@ -57,16 +58,21 @@ class TestDeleteLibrary(DeleteTest):
         return new_library
 
 
-def test_list_library(authenticated_client, live_server, libraries):
-    response = authenticated_client.get(live_server.url + reverse("library-list"))
-    assert response.status_code == status.HTTP_200_OK
+class TestListLibrary(ListTest):
+    model = Library
+    fields = ["id", "name", "url"]
 
-    # check returned fields
-    fields = list(response.json()[0].keys())
-    assert ["id", "name", "url"] == fields
+    @pytest.fixture
+    def objs(self, libraries):
+        return libraries
 
-    # check response values
-    for i, response_lib in enumerate(response.json()):
-        library = libraries[i]
-        for key, value in response_lib.items():
-            assert value == getattr(library, key)
+    def _check_response_values(self, libraries):
+        for i, response_lib in enumerate(self.response.json()):
+            library = libraries[i]
+            for key, value in response_lib.items():
+                assert value == getattr(library, key)
+
+
+class TestListLibraryHistory(TestListHistory):
+    model = Library
+    path_finder = PathFinder("histories", related="library")

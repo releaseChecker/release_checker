@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import Library
+from .models import Library, History
 from .library_version import LibraryVersion
 
 
@@ -40,4 +40,15 @@ class DeleteLibrarySerializer(serializers.ModelSerializer):
         model = Library
         fields = [
             "id",
+        ]
+
+
+class HistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = History
+        fields = [
+            "id",
+            "library",
+            "version",
+            "url",
         ]

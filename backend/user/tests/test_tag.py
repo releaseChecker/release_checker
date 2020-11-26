@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.reverse import reverse
 
-from tests.base_classes import DeleteTest
+from library.tests.test_history import TestListHistory
+from tests.base_classes import DeleteTest, ListTest, PathFinder
 from user.models import Tag
 
 
@@ -28,15 +29,52 @@ class TestDeleteTag(DeleteTest):
         return new_tag
 
 
-def test_list_tag(authenticated_client, live_server, libraries, tags):
-    response = authenticated_client.get(live_server.url + reverse("tag-list"))
-    assert response.status_code == status.HTTP_200_OK
+class TestListTag(ListTest):
+    model = Tag
+    fields = ["id", "library"]
 
-    response_libs = [resp["library"] for resp in response.json()]
-    for i, response_lib in enumerate(response_libs):
-        library = libraries[i]
-        for key, value in response_lib.items():
-            assert value == getattr(library, key)
+    @pytest.fixture
+    def objs(self, tags):
+        return tags
 
-    for tag in tags:
-        assert tag.user.username == "test"
+    def _check_response_values(self, tags):
+        response_libs = [resp["library"] for resp in self.response.json()]
+        for i, response_lib in enumerate(response_libs):
+            library = tags[i].library
+            for key, value in response_lib.items():
+                assert value == getattr(library, key)
+
+    def _check_additionally(self, objs):
+        self._check_owner_of_tags()
+
+    def _check_owner_of_tags(self):
+        response_tag_ids = [resp["id"] for resp in self.response.json()]
+        for tag_id in response_tag_ids:
+            assert Tag.objects.get(id=tag_id).user.username == "test"
+
+
+@pytest.fixture
+def tagged_histories(new_user, histories):
+    library = histories[0].library
+    Tag.objects.create(user=new_user, library=library)
+    return histories
+
+
+# need sorted test_case
+@pytest.mark.a
+class TestListTagHistory(TestListHistory):
+    model = Tag
+    path_finder = PathFinder("histories")
+
+    @pytest.fixture
+    def objs(self, tagged_histories):
+        return tagged_histories
+
+    def _check_additionally(self, objs):
+        self._check_histories_belong_to_correct_tag(objs)
+
+    def _check_histories_belong_to_correct_tag(self, objs):
+        raise NotImplementedError
+
+
+
